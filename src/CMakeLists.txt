@@ -381,6 +381,7 @@ list(APPEND SOURCE_FILES
         displayapp/screens/Motion.cpp
         displayapp/screens/Weather.cpp
         displayapp/screens/Calculator.cpp
+        displayapp/screens/TOTP.cpp
         displayapp/screens/FirmwareValidation.cpp
         displayapp/screens/ApplicationList.cpp
         displayapp/screens/Notifications.cpp
