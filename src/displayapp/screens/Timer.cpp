@@ -26,6 +26,7 @@ Timer::Timer(Controllers::Timer& timerController) : timer {timerController} {
   lv_obj_align(colonLabel, lv_scr_act(), LV_ALIGN_CENTER, 0, -29);
 
   minuteCounter.Create();
+  minuteCounter.SetValue(5);
   secondCounter.Create();
   lv_obj_align(minuteCounter.GetObject(), nullptr, LV_ALIGN_IN_TOP_LEFT, 0, 0);
   lv_obj_align(secondCounter.GetObject(), nullptr, LV_ALIGN_IN_TOP_RIGHT, 0, 0);
@@ -147,7 +148,7 @@ void Timer::ToggleRunning() {
 }
 
 void Timer::Reset() {
-  minuteCounter.SetValue(0);
+  minuteCounter.SetValue(5);
   secondCounter.SetValue(0);
   SetTimerStopped();
 }
