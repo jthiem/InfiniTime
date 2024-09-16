@@ -105,9 +105,7 @@ void Timer::UpdateMask() {
 
 void Timer::Refresh() {
   if (timer.IsRunning()) {
-    auto secondsRemaining = std::chrono::duration_cast<std::chrono::seconds>(timer.GetTimeRemaining());
-    minuteCounter.SetValue(secondsRemaining.count() / 60);
-    secondCounter.SetValue(secondsRemaining.count() % 60);
+    DisplayTime();
   } else if (buttonPressing && xTaskGetTickCount() > pressTime + pdMS_TO_TICKS(150)) {
     lv_label_set_text_static(txtPlayPause, "Reset");
     maskPosition += 15;
@@ -117,6 +115,14 @@ void Timer::Refresh() {
     } else {
       UpdateMask();
     }
+  }
+}
+
+void Timer::DisplayTime() {
+  displaySeconds = std::chrono::duration_cast<std::chrono::seconds>(timer.GetTimeRemaining());
+  if (displaySeconds.IsUpdated()) {
+    minuteCounter.SetValue(displaySeconds.Get().count() / 60);
+    secondCounter.SetValue(displaySeconds.Get().count() % 60);
   }
 }
 
@@ -134,9 +140,7 @@ void Timer::SetTimerStopped() {
 
 void Timer::ToggleRunning() {
   if (timer.IsRunning()) {
-    auto secondsRemaining = std::chrono::duration_cast<std::chrono::seconds>(timer.GetTimeRemaining());
-    minuteCounter.SetValue(secondsRemaining.count() / 60);
-    secondCounter.SetValue(secondsRemaining.count() % 60);
+    DisplayTime();
     timer.StopTimer();
     SetTimerStopped();
   } else if (secondCounter.GetValue() + minuteCounter.GetValue() > 0) {
@@ -148,7 +152,6 @@ void Timer::ToggleRunning() {
 }
 
 void Timer::Reset() {
-  minuteCounter.SetValue(5);
-  secondCounter.SetValue(0);
+  DisplayTime();
   SetTimerStopped();
 }
