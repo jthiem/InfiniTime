@@ -41,6 +41,7 @@ namespace Pinetime {
         static constexpr const char* home = "\xEF\x80\x95";
         static constexpr const char* sleep = "\xEE\xBD\x84";
         static constexpr const char* calculator = "\xEF\x87\xAC";
+        static constexpr const char* lock = "\xEF\x80\xA3";
         static constexpr const char* backspace = "\xEF\x95\x9A";
 
         // fontawesome_weathericons.c

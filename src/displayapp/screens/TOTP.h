@@ -17,6 +17,7 @@ namespace Pinetime {
 
       private:
         lv_obj_t* title = nullptr;
+        lv_obj_t* labelCode = nullptr;
         lv_obj_t* labelTimer = nullptr;
         lv_task_t* taskRefresh = nullptr;
       };
@@ -25,7 +26,7 @@ namespace Pinetime {
     template <>
     struct AppTraits<Apps::TOTP> {
       static constexpr Apps app = Apps::TOTP;
-      static constexpr const char* icon = Screens::Symbols::tachometer;
+      static constexpr const char* icon = Screens::Symbols::lock;
 
       static Screens::Screen* Create(AppControllers& controllers) {
         return new Screens::TOTP();

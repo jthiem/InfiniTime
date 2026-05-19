@@ -45,22 +45,32 @@ WatchFaceDigital::WatchFaceDigital(Controllers::DateTime& dateTimeController,
   lv_obj_set_style_local_text_color(weatherIcon, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, lv_color_hex(0x999999));
   lv_obj_set_style_local_text_font(weatherIcon, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &fontawesome_weathericons);
   lv_label_set_text(weatherIcon, "");
-  lv_obj_align(weatherIcon, nullptr, LV_ALIGN_IN_TOP_MID, -20, 50);
+  lv_obj_align(weatherIcon, nullptr, LV_ALIGN_IN_TOP_LEFT, 0, 40);
   lv_obj_set_auto_realign(weatherIcon, true);
 
   temperature = lv_label_create(lv_scr_act(), nullptr);
   lv_obj_set_style_local_text_color(temperature, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, lv_color_hex(0x999999));
   lv_label_set_text(temperature, "");
-  lv_obj_align(temperature, nullptr, LV_ALIGN_IN_TOP_MID, 20, 50);
+  lv_obj_align(temperature, nullptr, LV_ALIGN_IN_TOP_LEFT, 40, 40);
+
+  label_week = lv_label_create(lv_scr_act(), nullptr);
+  lv_obj_set_style_local_text_color(temperature, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, lv_color_hex(0x999999));
+  lv_label_set_text(label_week, "");
+  lv_obj_align(label_week, nullptr, LV_ALIGN_IN_TOP_RIGHT, 0, 40);
+
+  label_utc = lv_label_create(lv_scr_act(), nullptr);
+  lv_obj_align(label_utc, lv_scr_act(), LV_ALIGN_CENTER, 0, 50);
+  lv_label_set_text(label_utc, "00");
+  lv_obj_set_style_local_text_color(label_utc, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, lv_color_hex(0x999999));
+  lv_obj_set_style_local_text_font(label_utc, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &jetbrains_mono_42);
 
   label_date = lv_label_create(lv_scr_act(), nullptr);
-  lv_obj_align(label_date, lv_scr_act(), LV_ALIGN_CENTER, 0, 60);
+  lv_obj_align(label_date, lv_scr_act(), LV_ALIGN_CENTER, 0, 80);
   lv_obj_set_style_local_text_color(label_date, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, lv_color_hex(0x999999));
 
   label_time = lv_label_create(lv_scr_act(), nullptr);
   lv_obj_set_style_local_text_font(label_time, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &jetbrains_mono_extrabold_compressed);
-
-  lv_obj_align(label_time, lv_scr_act(), LV_ALIGN_IN_RIGHT_MID, 0, 0);
+  lv_obj_align(label_time, lv_scr_act(), LV_ALIGN_IN_RIGHT_MID, 0, -10);
 
   label_time_ampm = lv_label_create(lv_scr_act(), nullptr);
   lv_label_set_text_static(label_time_ampm, "");
@@ -103,11 +113,12 @@ void WatchFaceDigital::Refresh() {
     lv_label_set_text_static(notificationIcon, NotificationIcon::GetIcon(notificationState.Get()));
   }
 
-  currentDateTime = std::chrono::time_point_cast<std::chrono::minutes>(dateTimeController.CurrentDateTime());
+  currentDateTime = std::chrono::time_point_cast<std::chrono::seconds>(dateTimeController.CurrentDateTime());
 
   if (currentDateTime.IsUpdated()) {
     uint8_t hour = dateTimeController.Hours();
     uint8_t minute = dateTimeController.Minutes();
+    uint8_t seconds = dateTimeController.Seconds();
 
     if (settingsController.GetClockType() == Controllers::Settings::ClockType::H12) {
       char ampmChar[3] = "AM";
@@ -127,6 +138,9 @@ void WatchFaceDigital::Refresh() {
       lv_obj_align(label_time, lv_scr_act(), LV_ALIGN_CENTER, 0, 0);
     }
 
+    lv_label_set_text_fmt(label_utc, "%02d", seconds);
+    lv_obj_realign(label_utc);
+
     currentDate = std::chrono::time_point_cast<std::chrono::days>(currentDateTime.Get());
     time_t ttTime =
       std::chrono::system_clock::to_time_t(std::chrono::time_point_cast<std::chrono::system_clock::duration>(currentDateTime.Get()));
@@ -137,28 +151,28 @@ void WatchFaceDigital::Refresh() {
       uint8_t day = dateTimeController.Day();
       if (settingsController.GetClockType() == Controllers::Settings::ClockType::H24) {
         strftime(buffer, 8, "%V", tmTime);
-        uint8_t weekNumber = atoi(buffer);
 
         lv_label_set_text_fmt(label_date,
-                              "%s %d %s %d\nWEEK %02d",
+                              "%s %d %s %d",
                               dateTimeController.DayOfWeekShortToString(),
                               day,
                               dateTimeController.MonthShortToString(),
-                              year,
-                              weekNumber);
+                              year);
       } else {
         strftime(buffer, 8, "%U", tmTime);
-        uint8_t weekNumber = atoi(buffer);
 
         lv_label_set_text_fmt(label_date,
-                              "%s %s %d %d\nWEEK %02d",
+                              "%s %s %d %d",
                               dateTimeController.DayOfWeekShortToString(),
                               dateTimeController.MonthShortToString(),
                               day,
-                              year,
-                              weekNumber);
+                              year);
       }
       lv_obj_realign(label_date);
+
+      uint8_t weekNumber = atoi(buffer);
+      lv_label_set_text_fmt(label_week, "WEEK % 2d", weekNumber);
+      lv_obj_realign(label_week);
     }
   }
 
