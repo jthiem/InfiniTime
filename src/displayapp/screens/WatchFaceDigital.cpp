@@ -62,7 +62,7 @@ WatchFaceDigital::WatchFaceDigital(Controllers::DateTime& dateTimeController,
   lv_obj_align(label_utc, lv_scr_act(), LV_ALIGN_CENTER, 0, 50);
   lv_label_set_text(label_utc, "00");
   lv_obj_set_style_local_text_color(label_utc, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, lv_color_hex(0x999999));
-  lv_obj_set_style_local_text_font(label_utc, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &jetbrains_mono_42);
+  //lv_obj_set_style_local_text_font(label_utc, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &jetbrains_mono_42);
 
   label_date = lv_label_create(lv_scr_act(), nullptr);
   lv_obj_align(label_date, lv_scr_act(), LV_ALIGN_CENTER, 0, 80);
